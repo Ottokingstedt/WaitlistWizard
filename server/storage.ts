@@ -1,10 +1,12 @@
-import { waitlist, type Subscriber, type InsertSubscriber } from "@shared/schema";
+import { waitlist, users, type Subscriber, type InsertSubscriber, type User, type InsertUser } from "@shared/schema";
+import { db } from './db';
+import { eq, count } from 'drizzle-orm';
 
 // Interface for storage operations
 export interface IStorage {
-  getUser(id: number): Promise<any | undefined>;
-  getUserByUsername(username: string): Promise<any | undefined>;
-  createUser(user: any): Promise<any>;
+  getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
   
   // Waitlist methods
   addSubscriber(subscriber: InsertSubscriber): Promise<Subscriber>;
@@ -13,8 +15,9 @@ export interface IStorage {
   getAllSubscribers(): Promise<Subscriber[]>;
 }
 
+// In-memory storage implementation
 export class MemStorage implements IStorage {
-  private users: Map<number, any>;
+  private users: Map<number, User>;
   private subscribers: Map<number, Subscriber>;
   currentUserId: number;
   currentSubscriberId: number;
@@ -27,17 +30,17 @@ export class MemStorage implements IStorage {
   }
 
   // User methods
-  async getUser(id: number): Promise<any | undefined> {
+  async getUser(id: number): Promise<User | undefined> {
     return this.users.get(id);
   }
 
-  async getUserByUsername(username: string): Promise<any | undefined> {
+  async getUserByUsername(username: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
       (user) => user.username === username,
     );
   }
 
-  async createUser(insertUser: any): Promise<any> {
+  async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
     const user = { ...insertUser, id };
     this.users.set(id, user);
@@ -73,4 +76,44 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// PostgreSQL storage implementation
+export class PgStorage implements IStorage {
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const result = await db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  // Waitlist methods
+  async addSubscriber(insertSubscriber: InsertSubscriber): Promise<Subscriber> {
+    const result = await db.insert(waitlist).values(insertSubscriber).returning();
+    return result[0];
+  }
+
+  async getSubscriberByEmail(email: string): Promise<Subscriber | undefined> {
+    const result = await db.select().from(waitlist).where(eq(waitlist.email, email)).limit(1);
+    return result[0];
+  }
+
+  async getSubscriberCount(): Promise<number> {
+    const result = await db.select({ count: count() }).from(waitlist);
+    return Number(result[0].count);
+  }
+
+  async getAllSubscribers(): Promise<Subscriber[]> {
+    return await db.select().from(waitlist).orderBy(waitlist.createdAt);
+  }
+}
+
+// Export the selected storage implementation
+export const storage = new PgStorage();
