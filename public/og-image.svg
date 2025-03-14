@@ -1,0 +1,13 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="url(#paint0_linear)" />
+  <path d="M600 315.5C600 349.979 582.388 382.703 552.319 406.487C522.25 430.272 481.435 443.5 438.75 443.5C396.065 443.5 355.25 430.272 325.181 406.487C295.112 382.703 277.5 349.979 277.5 315.5C277.5 281.021 295.112 248.297 325.181 224.513C355.25 200.728 396.065 187.5 438.75 187.5C481.435 187.5 522.25 200.728 552.319 224.513C582.388 248.297 600 281.021 600 315.5Z" fill="white" fill-opacity="0.1" />
+  <path d="M922.5 315.5C922.5 349.979 904.888 382.703 874.819 406.487C844.75 430.272 803.935 443.5 761.25 443.5C718.565 443.5 677.75 430.272 647.681 406.487C617.612 382.703 600 349.979 600 315.5C600 281.021 617.612 248.297 647.681 224.513C677.75 200.728 718.565 187.5 761.25 187.5C803.935 187.5 844.75 200.728 874.819 224.513C904.888 248.297 922.5 281.021 922.5 315.5Z" fill="white" fill-opacity="0.1" />
+  <text x="100" y="280" fill="white" font-family="Inter, system-ui, sans-serif" font-size="72" font-weight="700">ProductName</text>
+  <text x="100" y="350" fill="white" font-family="Inter, system-ui, sans-serif" font-size="36" font-weight="400">Transform Your Workflow Experience</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6366F1" />
+      <stop offset="1" stop-color="#8B5CF6" />
+    </linearGradient>
+  </defs>
+</svg>

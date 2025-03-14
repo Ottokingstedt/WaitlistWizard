@@ -1,0 +1,92 @@
+---
+// Layout component for Astro
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const { 
+  title, 
+  description = "A revolutionary product to transform your workflow experience and boost productivity.", 
+  image = "/og-image.png" 
+} = Astro.props;
+
+// Meta tags for SEO
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    
+    <!-- Preload fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Meta tags for better SEO -->
+    <meta name="author" content="ProductName" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Theme color for browser -->
+    <meta name="theme-color" content="#6366F1" />
+    
+    <!-- Slot for additional head elements from child pages -->
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen font-sans text-slate-900 antialiased">
+    <slot />
+    
+    <!-- Site scripts -->
+    <script is:inline>
+      // Add any global scripts here
+      document.addEventListener('astro:page-load', () => {
+        console.log('Page loaded');
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: var(--font-sans);
+  }
+  
+  /* Smooth animations */
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      scroll-behavior: smooth;
+    }
+  }
+</style>
